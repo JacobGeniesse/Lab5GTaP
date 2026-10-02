@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Experimental.GlobalIllumination;
-
 public class Avoider : MonoBehaviour
 {
     //nav mesh values
     private NavMeshAgent agent;
-
-
     [SerializeField] private Transform avoidee;
 
     //Sample Values
@@ -17,13 +13,16 @@ public class Avoider : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private bool useGizmos;
 
+    public int count;
+
     private float cooldown;
     private float maxCooldown = 1;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if(TryGetComponent<NavMeshAgent>(out NavMeshAgent navAgent))
+
+        if (TryGetComponent<NavMeshAgent>(out NavMeshAgent navAgent))
         {
             agent = navAgent;
             agent.speed = speed;
@@ -37,13 +36,12 @@ public class Avoider : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(cooldown <= 0)
+        if (cooldown <= 0)
         {
             if (SightCheck(transform.position) == true)
             {
+                MoveAway(ChosePoint(GatherSamples()));
                 cooldown = maxCooldown;
-                
-                Debug.Log(GatherSamples().Count);
             }
         }
         else
@@ -56,63 +54,79 @@ public class Avoider : MonoBehaviour
     {
         if (Physics.Linecast(originPoint, avoidee.position, out RaycastHit hit))
         {
-
-            return true;
+            if(hit.collider.tag == "Player")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
 
     //Gather Samples
     private List<Vector3> GatherSamples()
     {
-        var sampler = new PoissonDiscSampler(transform.position, range, range, radius); //Create a PoissonDiscSampler
-        List<Vector3> pointList= new List<Vector3>(); //Create a collection to store candidate hiding spots X
+        var sampler = new PoissonDiscSampler(range, range, radius); //Create a PoissonDiscSampler
+        List<Vector3> pointList = new List<Vector3>(); //Create a collection to store candidate hiding spots X
         foreach (var point in sampler.Samples())
         {
-            if (SightCheck(point)) //Foreach point in the PoissonDiscSampler, can the avoidee see it? (check visibility to point)
+            /*
+             * Full disclosure, the sample pos solution did not originate with me. I asked Xavier Peterson (Classmate) for help
+             * after struggling for most of class wednesday and for hours on friday trying to get my attempted solution to work.
+             * He told me that you ended up giving him help with this since he and his team were also having trouble. The rest of this script
+             * is my code, specifically the samplePos solution is not however
+             */
+            Vector3 samplePos = new Vector3(transform.position.x + point.x - range / 2, transform.position.y, transform.position.z + point.y - range / 2);
+            if (SightCheck(samplePos) == false) //Foreach point in the PoissonDiscSampler, can the avoidee see it? (check visibility to point)
             {
-                //if (useGizmos) //Foreach point visualize a line to it
-                //{
-                //    Gizmos.color = Color.red;
-                //    Gizmos.DrawLine(transform.position, point);
-                //}
-                //Yes: ignore that point
+                if(useGizmos == true)
+                {
+                    Debug.DrawLine(transform.position, samplePos, Color.green);
+                }
+                pointList.Add(samplePos);
             }
             else
             {
-                //if (useGizmos) //Foreach point visualize a line to it
-                //{
-                //    Gizmos.color = Color.green;
-                //    Gizmos.DrawLine(transform.position, point);
-                //}
-                pointList.Add(point);
-                //No: add the point to the candidate list
+                if(useGizmos == true)
+                {
+                    Debug.DrawLine(transform.position, samplePos, Color.red);
+                }
             }
         }
-        
+
         return pointList;
-
     }
 
-    private void OnDrawGizmos()
+    private Vector3 ChosePoint(List<Vector3> points)
     {
-        Gizmos.color = Color.red;
-        var sampler = new PoissonDiscSampler(transform.position, range, range, radius); //Create a PoissonDiscSampler
-        List<Vector2> pointList = new List<Vector2>(); //Create a collection to store candidate hiding spots X
-        foreach (Vector2 point in sampler.Samples())
+        Vector3 closestPos = Vector3.zero;
+        float closenessScore = 99999;
+        foreach (Vector3 pos in points)
         {
-            Gizmos.DrawLine(transform.position, point);
-            if (useGizmos) //Foreach point visualize a line to it
+            Vector3 pointOffset = transform.position - pos;
+            float closeness = Vector3.SqrMagnitude(pointOffset);
+
+            if (closeness < closenessScore)
             {
+                closestPos = pos;
+                closenessScore = closeness;
             }
+        }
+
+        return closestPos;
+    }
+
+    private void MoveAway(Vector3 targetPos)
+    {
+        if(agent != null)
+        {
+            agent.SetDestination(targetPos);
         }
     }
 
-
-
-    //Poisson Disc Sampling Stuff
 }
