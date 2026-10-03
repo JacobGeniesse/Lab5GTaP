@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Poisson disc sampler code written by Gregory Schlomoff and obtained via the link provided in the assignment description.
 public class PoissonDiscSampler
 {
     private const int k = 30;  // Maximum number of attempts before marking a sample as inactive.
@@ -116,5 +117,4 @@ public class PoissonDiscSampler
             y = (int)(sample.y / cellSize);
         }
     }
-
 }

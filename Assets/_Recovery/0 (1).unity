@@ -753,14 +753,32 @@ GameObject:
   - component: {fileID: 1383480697}
   - component: {fileID: 1383480696}
   - component: {fileID: 1383480695}
-  - component: {fileID: 1383480700}
+  - component: {fileID: 1383480694}
   m_Layer: 2
-  m_Name: Avoider
+  m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1383480694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383480693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdce5fc39f21697489d2d1a8084cc176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoissonDiscSampler
+  avoidee: {fileID: 508766142}
+  range: 10
+  radius: 3
+  speed: 5
+  useGizmos: 1
+  count: 0
 --- !u!195 &1383480695
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -872,29 +890,12 @@ Transform:
   m_GameObject: {fileID: 1383480693}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.38, y: 1.5, z: -2.99}
+  m_LocalPosition: {x: -5.56, y: 1.5, z: 2.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1383480700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1383480693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -546505955, guid: 8d9430a25249d5341af047fc839b15a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: JacobLab5.dll::JacobLab5.Avoider
-  avoidee: {fileID: 508766142}
-  range: 10
-  radius: 2
-  speed: 5
-  useGizmos: 1
 --- !u!1 &1454929583
 GameObject:
   m_ObjectHideFlags: 0
