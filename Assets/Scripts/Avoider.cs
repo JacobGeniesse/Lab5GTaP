@@ -41,11 +41,12 @@ public class Avoider : MonoBehaviour
             Debug.LogError("Nothing to avoid!"); //Give an error if the avoidee transform is not assigned
         }
 
-        sampleList = GatherSamples();
+        sampleList = GatherSamples(); //Initial sample gathering for line drawing
     }
 
     void Update()
     {
+        bool resetCooldown = true; //Should the cooldown be reset?
         if(fullList.Count > 0)
         {
             DrawSamples(fullList); //Draw the full list of points every frame to indicate position
@@ -65,9 +66,13 @@ public class Avoider : MonoBehaviour
                 else
                 {
                     Debug.Log("Nowhere to run!");
+                    resetCooldown = false; //If there's nowhere to run, skip the cooldown and instantly try again
                 }
             }
-            cooldown = maxCooldown; //Start cooldown again
+            if(resetCooldown == true)
+            {
+                cooldown = maxCooldown; //Start cooldown again
+            }
         }
         else
         {
@@ -119,18 +124,8 @@ public class Avoider : MonoBehaviour
 
             if (SightCheck(pointTranslation) == false) //Foreach point in the PoissonDiscSampler, can the avoidee see it? (check visibility to point)
             {
-                if(useGizmos == true) //If using gizmos draw a green line to indicate that the desired location is a safe place to travel to
-                {
-                    Debug.DrawLine(transform.position, pointTranslation, Color.green);
-                }
+
                 pointList.Add(pointTranslation); //Add the point to the list
-            }
-            else
-            {
-                if(useGizmos == true) //If using gizmos draw a red line to indicate that the desired location is not a safe place to travel to
-                {
-                    Debug.DrawLine(transform.position, pointTranslation, Color.red);
-                }
             }
             fullList.Add(pointTranslation); //Add point to the full list for drawing
         }
@@ -149,9 +144,42 @@ public class Avoider : MonoBehaviour
         float closenessScore = 99999; //Set the closeness score large enough that the first search will be garunteed to be smaller
         foreach (Vector3 pos in points)
         {
-            //Calc the sqrmagnitude distance between the points
-            Vector3 pointOffset = transform.position - pos;
-            float closeness = Vector3.SqrMagnitude(pointOffset);
+            float closeness = 0; //Set closeness score to 0
+
+            NavMeshPath testPath = new NavMeshPath(); //Create an empty path
+            agent.CalculatePath(pos, testPath); //Calculate a path to the desired point
+            agent.SetPath(testPath); //set the path
+
+            //If the path is calculated
+            if (!agent.pathPending)
+            {
+                //If there are more corners than 0 on a path
+                if(testPath.corners.Length > 0)
+                {
+                    //Calc the sqrmagnitude distance between the avoider and first corner
+                    Vector3 pointOffset = transform.position - testPath.corners[0];
+                    closeness += Vector3.SqrMagnitude(pointOffset);
+
+                    //For each additional corner add on the sqrmagnitude to get a more accurate distance calc
+                    for (int i = 1; i < testPath.corners.Length; i++)
+                    {
+                        pointOffset = testPath.corners[i - 1] - testPath.corners[i];
+                        closeness += Vector3.SqrMagnitude(pointOffset);
+                    }
+                }
+                else
+                {
+                    //If there are no corners default to the distance between the avoider and the pos
+                    Vector3 pointOffset = transform.position - pos;
+                    closeness += Vector3.SqrMagnitude(pointOffset);
+                }
+            }
+
+            //If the pos is the avoidee's position, ignore it
+            if (pos == avoidee.position)
+            {
+                closeness = 9999;
+            }
 
             //If the this point is closer than the reigning closeness score
             if (closeness < closenessScore)
@@ -181,7 +209,7 @@ public class Avoider : MonoBehaviour
         {
             foreach (Vector3 pos in points)
             {
-                if (SightCheck(pos) == false) //Foreach point in the PoissonDiscSampler, can the avoidee see it? (check visibility to point)
+                if (SightCheck(pos) == false && pos != avoidee.position) //Foreach point in the PoissonDiscSampler, can the avoidee see it? (check visibility to point)
                 {
                     //If using gizmos draw a green line to indicate that the desired location is a safe place to travel to
                     Debug.DrawLine(transform.position, pos, Color.green);
