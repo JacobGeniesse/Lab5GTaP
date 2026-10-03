@@ -1,0 +1,13 @@
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\bin\Debug\netstandard2.1\JacobLab5.deps.json
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\bin\Debug\netstandard2.1\JacobLab5.dll
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\bin\Debug\netstandard2.1\JacobLab5.pdb
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\bin\Debug\netstandard2.1\UnityEngine.dll
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\bin\Debug\netstandard2.1\UnityEngine.xml
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.csproj.AssemblyReference.cache
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.AssemblyInfoInputs.cache
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.AssemblyInfo.cs
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.csproj.CoreCompileInputs.cache
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.csproj.Up2Date
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.dll
+C:\Users\jacob\source\repos\JacobLab5\JacobLab5\obj\Debug\netstandard2.1\JacobLab5.pdb
